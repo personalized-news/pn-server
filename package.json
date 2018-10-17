@@ -1,0 +1,23 @@
+{
+  "name": "pn-server",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "start": "npm run dev",
+    "lint": "prettier --write *.js */*.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "ZYSzys <17367077526@163.com> (http://zyszys.top/)",
+  "license": "MIT",
+  "dependencies": {
+    "koa": "2.5.3",
+    "koa-basic-auth": "3.0.0",
+    "koa-router": "7.4.0"
+  },
+  "devDependencies": {
+    "nodemon": "1.18.4",
+    "prettier": "1.14.3"
+  }
+}
