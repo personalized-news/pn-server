@@ -1,31 +1,22 @@
 'use strict';
 
 const Koa = require('koa');
-const auth = require('koa-basic-auth');
-const router = require('./routes');
-const config = require('./config');
+const bodyParser = require('koa-bodyparser');
+const logger = require('koa-logger');
 
+const config = require('./config');
+const home = require('./routes/home');
+const user = require('./routes/user');
 const app = new Koa();
 
-app.use(async function(ctx, next) {
-  try {
-    await next();
-  } catch (err) {
-    if (err.status === 401) {
-      ctx.status = 401;
-      ctx.set('WWW-Authenticate', 'Basic');
-      ctx.body = 'cant haz that';
-    } else {
-      throw err;
-    }
-  }
-});
-
-// require auth
-app.use(auth({ name: 'ZYSzys', pass: '123' }));
+app.use(bodyParser());
+app.use(logger());
 
 // secret response
-app.use(router.routes());
+app.use(home.routes());
+app.use(home.allowedMethods());
+app.use(user.routes());
+app.use(user.allowedMethods());
 
 if (!module.parent) {
   app.listen(config.port);
