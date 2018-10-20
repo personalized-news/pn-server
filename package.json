@@ -7,7 +7,7 @@
     "dev": "nodemon index.js",
     "start": "npm run dev",
     "lint": "prettier --write *.js */*.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node_modules/.bin/mocha --recursive test/"
   },
   "author": "ZYSzys <17367077526@163.com> (http://zyszys.top/)",
   "license": "MIT",
@@ -21,8 +21,10 @@
   "devDependencies": {
     "husky": "1.1.2",
     "lint-staged": "7.3.0",
+    "mocha": "5.2.0",
     "nodemon": "1.18.4",
-    "prettier": "1.14.3"
+    "prettier": "1.14.3",
+    "supertest": "3.3.0"
   },
   "husky": {
     "hooks": {
@@ -30,7 +32,11 @@
     }
   },
   "lint-staged": {
-    "*": [
+    "*.js": [
+      "npm run lint",
+      "git add"
+    ],
+    "**/*.js": [
       "npm run lint",
       "git add"
     ]
