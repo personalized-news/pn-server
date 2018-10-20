@@ -1,6 +1,5 @@
 'use strict';
 
-const data = require('../mock');
 const { getUsers } = require('../models/user');
 
 const checkLogin = async (ctx, next) => {

@@ -5,18 +5,15 @@ const bodyParser = require('koa-bodyparser');
 const logger = require('koa-logger');
 
 const config = require('./config');
-const home = require('./routes/home');
-const user = require('./routes/user');
+const router = require('./routes');
 const app = new Koa();
 
 app.use(bodyParser());
 app.use(logger());
 
-// secret response
-app.use(home.routes());
-app.use(home.allowedMethods());
-app.use(user.routes());
-app.use(user.allowedMethods());
+// router
+app.use(router.routes());
+app.use(router.allowedMethods());
 
 if (!module.parent) {
   app.listen(config.port);
