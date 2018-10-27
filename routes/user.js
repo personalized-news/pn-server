@@ -3,29 +3,35 @@
 const Router = require('koa-router');
 const router = new Router();
 
-const { checkLogin } = require('../controllers/user');
+const {
+  checkLogin,
+  checkSignup,
+  index,
+  signup,
+  login,
+  logout
+} = require('../controllers/user');
 
 router.prefix('/user');
 
-router.get('/', (ctx, next) => {
-  ctx.body = 'Personality';
+router.get('/', index);
+
+router.get('/signup', async (ctx, next) => {
+  ctx.body = 'GET / signup page';
 });
 
-router.post('/login', async (ctx, next) => {
-  try {
-    await next();
-    await checkLogin(ctx, next);
-    console.log(ctx.request.body);
-    console.log(ctx.response);
-  } catch (e) {
-    if (e.status === 401) {
-      ctx.status = 401;
-      ctx.set('WWW-Authenticate', 'Basic');
-      ctx.body = 'cant haz that';
-    } else {
-      throw e;
-    }
-  }
+router.post('/signup', signup);
+
+router.get('/login', async (ctx, next) => {
+  ctx.body = 'GET / login page';
 });
+
+router.post('/login', login);
+
+router.get('/logout', async (ctx, next) => {
+  ctx.body = 'GET / logout page';
+});
+
+router.post('/logout', logout);
 
 module.exports = router;

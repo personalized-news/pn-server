@@ -5,8 +5,11 @@ const router = new Router();
 
 router.prefix('/about');
 
-router.get('/', (ctx, next) => {
-  ctx.body = 'About personalized-news';
+router.get('/', async (ctx, next) => {
+  ctx.body = {
+    status: 200,
+    message: 'About personalized-news'
+  };
 });
 
 module.exports = router;

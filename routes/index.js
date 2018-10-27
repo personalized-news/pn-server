@@ -16,7 +16,8 @@ fs.readdirSync(__dirname)
     const route = require(path.resolve(__dirname, file));
     router.use(route.routes(), route.allowedMethods());
   });
-router.get('/', (ctx, next) => {
+
+router.get('/', async (ctx, next) => {
   ctx.body = 'Home Page';
 });
 
