@@ -12,6 +12,7 @@
   "author": "ZYSzys <17367077526@163.com> (http://zyszys.top/)",
   "license": "MIT",
   "dependencies": {
+    "@koa/cors": "2.2.2",
     "chalk": "2.4.1",
     "koa": "2.5.3",
     "koa-bodyparser": "4.2.1",
