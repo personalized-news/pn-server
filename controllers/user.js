@@ -7,30 +7,24 @@ const index = async (ctx, next) => {
 };
 
 const signup = async (ctx, next) => {
+  console.log(ctx.request.body);
   const { username, password, repassword } = ctx.request.body;
-  if (password === undefined || repassword === undefined) {
-    if (repassword === undefined) {
-      ctx.body = {
-        status: 0,
-        message: '请输入确认密码'
-      };
-    } else {
-      ctx.body = {
-        status: 0,
-        message: '密码不能为空'
-      };
-    }
-  } else if (password.trim() !== repassword.trim()) {
+  const userInfo = await getUserInfo(username);
+  if (userInfo !== null) {
     ctx.body = {
       status: 0,
-      message: '请确保两次输入密码相同'
+      message: '用户名已存在'
     };
   } else {
-    const userInfo = await getUserInfo(username);
-    if (userInfo !== null) {
+    if (userInfo === null && password === undefined) {
       ctx.body = {
         status: 0,
-        message: '用户名已存在'
+        message: '用户名未存在'
+      };
+    } else if (password.trim() !== repassword.trim()) {
+      ctx.body = {
+        status: 0,
+        message: '请确保两次输入密码相同'
       };
     } else {
       await createUser({ username, password });
