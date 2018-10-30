@@ -39,7 +39,6 @@ const signup = async (ctx, next) => {
 
 const login = async (ctx, next) => {
   const { username, password } = ctx.request.body;
-  console.log(ctx.request.body);
   if (password === undefined) {
     ctx.body = {
       status: 0,
@@ -47,9 +46,7 @@ const login = async (ctx, next) => {
     };
     return;
   }
-  console.log(username, password);
   const userInfo = await getUserInfo(username);
-  console.log(userInfo);
   if (userInfo === null) {
     ctx.body = {
       status: 0,
