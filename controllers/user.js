@@ -7,7 +7,6 @@ const index = async (ctx, next) => {
 };
 
 const signup = async (ctx, next) => {
-  console.log(ctx.request.body);
   const { username, password, repassword } = ctx.request.body;
   const userInfo = await getUserInfo(username);
   if (userInfo !== null) {
@@ -39,30 +38,42 @@ const signup = async (ctx, next) => {
 
 const login = async (ctx, next) => {
   const { username, password } = ctx.request.body;
-  if (password === undefined) {
-    ctx.body = {
-      status: 0,
-      message: '请输入密码'
-    };
-    return;
-  }
-  const userInfo = await getUserInfo(username);
-  if (userInfo === null) {
-    ctx.body = {
-      status: 0,
-      message: '此用户不存在'
-    };
-  } else if (userInfo.password !== password.trim()) {
-    ctx.body = {
-      status: 0,
-      message: '密码不正确'
-    };
-  } else {
-    ctx.session.username = username;
-    ctx.body = {
-      status: 200,
-      message: '登录成功'
-    };
+  if (username !== undefined && password === undefined) {
+    const userInfo = await getUserInfo(username);
+    if (userInfo === null) {
+      ctx.body = {
+        status: 0,
+        message: '该账号不存在'
+      };
+      return;
+    } else {
+      ctx.body = {
+        status: 200,
+        message: '该账号存在'
+      };
+      return;
+    }
+  } else if (username !== undefined && password !== undefined) {
+    const userInfo = await getUserInfo(username);
+    if (userInfo === null) {
+      ctx.body = {
+        status: 0,
+        message: '该账号不存在'
+      };
+      return;
+    } else if (password !== userInfo.password) {
+      ctx.body = {
+        status: 0,
+        message: '密码错误'
+      };
+      return;
+    } else {
+      ctx.body = {
+        status: 200,
+        message: '密码正确'
+      };
+      return;
+    }
   }
 };
 
