@@ -8,29 +8,22 @@ const index = async (ctx, next) => {
 
 const signup = async (ctx, next) => {
   const { username, password, repassword } = ctx.request.body;
-  if (password === undefined || repassword === undefined) {
-    if (repassword === undefined) {
-      ctx.body = {
-        status: 0,
-        message: '请输入确认密码'
-      };
-    } else {
-      ctx.body = {
-        status: 0,
-        message: '密码不能为空'
-      };
-    }
-  } else if (password.trim() !== repassword.trim()) {
+  const userInfo = await getUserInfo(username);
+  if (userInfo !== null) {
     ctx.body = {
       status: 0,
-      message: '请确保两次输入密码相同'
+      message: '用户名已存在'
     };
   } else {
-    const userInfo = await getUserInfo(username);
-    if (userInfo !== null) {
+    if (userInfo === null && password === undefined) {
       ctx.body = {
         status: 0,
-        message: '用户名已存在'
+        message: '用户名未存在'
+      };
+    } else if (password.trim() !== repassword.trim()) {
+      ctx.body = {
+        status: 0,
+        message: '请确保两次输入密码相同'
       };
     } else {
       await createUser({ username, password });
@@ -45,30 +38,42 @@ const signup = async (ctx, next) => {
 
 const login = async (ctx, next) => {
   const { username, password } = ctx.request.body;
-  if (password === undefined) {
-    ctx.body = {
-      status: 0,
-      message: '请输入密码'
-    };
-    return;
-  }
-  const userInfo = await getUserInfo(username);
-  if (userInfo === null) {
-    ctx.body = {
-      status: 0,
-      message: '此用户不存在'
-    };
-  } else if (userInfo.password !== password.trim()) {
-    ctx.body = {
-      status: 0,
-      message: '密码不正确'
-    };
-  } else {
-    ctx.session.username = username;
-    ctx.body = {
-      status: 200,
-      message: '登录成功'
-    };
+  if (username !== undefined && password === undefined) {
+    const userInfo = await getUserInfo(username);
+    if (userInfo === null) {
+      ctx.body = {
+        status: 0,
+        message: '该账号不存在'
+      };
+      return;
+    } else {
+      ctx.body = {
+        status: 200,
+        message: '该账号存在'
+      };
+      return;
+    }
+  } else if (username !== undefined && password !== undefined) {
+    const userInfo = await getUserInfo(username);
+    if (userInfo === null) {
+      ctx.body = {
+        status: 0,
+        message: '该账号不存在'
+      };
+      return;
+    } else if (password !== userInfo.password) {
+      ctx.body = {
+        status: 0,
+        message: '密码错误'
+      };
+      return;
+    } else {
+      ctx.body = {
+        status: 200,
+        message: '密码正确'
+      };
+      return;
+    }
   }
 };
 
