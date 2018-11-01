@@ -3,7 +3,15 @@
 const { getUserInfo, createUser } = require('../models/user');
 
 const index = async (ctx, next) => {
-  ctx.body = 'User page';
+  if (ctx.session.username) {
+    const userInfo = await getUserInfo(username);
+    ctx.body = userInfo;
+  } else {
+    ctx.body = {
+      status: 200,
+      message: 'Not login'
+    };
+  }
 };
 
 const signup = async (ctx, next) => {

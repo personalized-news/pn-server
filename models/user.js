@@ -1,6 +1,6 @@
 'use strict';
 
-const User = require('../lib/mongo');
+const { User } = require('../lib/mongo');
 
 module.exports = {
   getUsers: () => User.find({}),
