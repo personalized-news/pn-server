@@ -9,7 +9,7 @@ const showAllNews = async (ctx, next) => {
     const newsList = await getNewsList();
     ctx.body = {
       staus: 200,
-      data: newsList
+      data: newsList.slice(0, 20)
     };
   } catch (e) {
     console.log(e);
