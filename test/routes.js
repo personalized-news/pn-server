@@ -21,6 +21,9 @@ describe('GET /', function() {
   it('GET /user OK', function(done) {
     request.get('/user').expect(200, done);
   });
+  it('GET /news OK', done => {
+    request.get('/news').expect(200, done);
+  });
 
   after(() => process.exit());
 });

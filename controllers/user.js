@@ -3,7 +3,7 @@
 const { getUserInfo, createUser } = require('../models/user');
 
 const index = async (ctx, next) => {
-  if (ctx.session.username) {
+  if (ctx.session && ctx.session.username) {
     const userInfo = await getUserInfo(ctx.session.username);
     ctx.body = userInfo;
   } else {
