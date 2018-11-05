@@ -11,7 +11,8 @@ const showAllNews = async (ctx, next) => {
       staus: 200,
       data: newsList
     };
-  } catch {
+  } catch (e) {
+    console.log(e);
     ctx.body = {
       status: 200,
       message: 'No news'
