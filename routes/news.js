@@ -3,10 +3,10 @@
 const Router = require('koa-router');
 const router = new Router();
 
+const { showAllNews } = require('../controllers/news');
+
 router.prefix('/news');
 
-router.get('/', async (ctx, next) => {
-  ctx.body = 'news';
-});
+router.get('/', showAllNews);
 
 module.exports = router;
