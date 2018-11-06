@@ -8,13 +8,12 @@ const showAllNews = async (ctx, next) => {
   try {
     const newsList = await getNewsList();
     ctx.body = {
-      staus: 200,
-      data: newsList.slice(0, 20)
+      code: 0,
+      newsList: newsList.slice(0, 20)
     };
   } catch (e) {
-    console.log(e);
     ctx.body = {
-      status: 200,
+      code: 0,
       message: 'No news'
     };
   }

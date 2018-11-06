@@ -7,7 +7,7 @@ router.prefix('/about');
 
 router.get('/', async (ctx, next) => {
   ctx.body = {
-    status: 200,
+    code: 0,
     message: 'About personalized-news'
   };
 });

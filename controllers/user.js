@@ -8,7 +8,7 @@ const index = async (ctx, next) => {
     ctx.body = userInfo;
   } else {
     ctx.body = {
-      status: 200,
+      code: -1,
       message: 'Not login'
     };
   }
@@ -19,26 +19,26 @@ const signup = async (ctx, next) => {
   const userInfo = await getUserInfo(username);
   if (userInfo !== null) {
     ctx.body = {
-      status: 0,
+      code: -1,
       message: '用户名已存在'
     };
   } else {
-    if (userInfo === null && password === undefined) {
+    if (password === undefined) {
       ctx.body = {
-        status: 0,
-        message: '用户名未存在'
+        code: -1,
+        message: '请输入密码'
       };
     } else if (password.trim() !== repassword.trim()) {
       ctx.body = {
-        status: 0,
+        code: -1,
         message: '请确保两次输入密码相同'
       };
     } else {
       await createUser({ username, password });
       ctx.session.username = username;
       ctx.body = {
-        status: 200,
-        message: '注册成功'
+        code: 0,
+        message: 'Succeed'
       };
     }
   }
@@ -46,41 +46,24 @@ const signup = async (ctx, next) => {
 
 const login = async (ctx, next) => {
   const { username, password } = ctx.request.body;
-  if (username !== undefined && password === undefined) {
+  if (username !== undefined && password !== undefined) {
     const userInfo = await getUserInfo(username);
     if (userInfo === null) {
       ctx.body = {
-        status: 0,
+        code: -1,
         message: '该账号不存在'
       };
-      return;
-    } else {
+    } else if (password.trim() !== userInfo.password) {
       ctx.body = {
-        status: 200,
-        message: '该账号存在'
-      };
-      return;
-    }
-  } else if (username !== undefined && password !== undefined) {
-    const userInfo = await getUserInfo(username);
-    if (userInfo === null) {
-      ctx.body = {
-        status: 0,
-        message: '该账号不存在'
-      };
-      return;
-    } else if (password !== userInfo.password) {
-      ctx.body = {
-        status: 0,
+        code: -1,
         message: '密码错误'
       };
-      return;
     } else {
+      ctx.session.username = username;
       ctx.body = {
-        status: 200,
+        code: 0,
         message: '密码正确'
       };
-      return;
     }
   }
 };
