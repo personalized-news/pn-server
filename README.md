@@ -8,6 +8,9 @@
 
 ## Install
 
+- [mongodb]()
+- [redis]()
+
 ```sh
 git clone git@github.com:personalized-news/pn-server.git
 ```
