@@ -18,7 +18,10 @@ fs.readdirSync(__dirname)
   });
 
 router.get('/', async (ctx, next) => {
-  ctx.body = 'Home Page';
+  ctx.body = {
+    code: 0,
+    message: 'Home Page'
+  };
 });
 
 module.exports = router;

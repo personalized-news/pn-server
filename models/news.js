@@ -3,7 +3,7 @@
 const { News } = require('../lib/mongo');
 
 module.exports = {
-  getNews: title => News.findOne({ title }),
-  getNewsList: () => News.find({}),
+  getNews: () => News.find({}),
+  getNewsByChannelName: channelName => News.find({ channelName }),
   createNews: News => new News(News).save()
 };

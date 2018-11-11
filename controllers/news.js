@@ -1,12 +1,14 @@
 'use strict';
 
-const { getNews, getNewsList } = require('../models/news');
+const { getNews, getNewsByChannelName } = require('../models/news');
 
 const news = () => {};
 
 const showAllNews = async (ctx, next) => {
+  // const query = ctx.query;
+  // console.log(query);
   try {
-    const newsList = await getNewsList();
+    const newsList = await getNews();
     ctx.body = {
       code: 0,
       newsList: newsList.slice(0, 20)
