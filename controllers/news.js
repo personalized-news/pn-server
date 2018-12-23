@@ -1,5 +1,5 @@
 'use strict';
-
+const zlib = require('zlib');
 const { getNews, getNewsByChannelName } = require('../models/news');
 
 const news = () => {};
@@ -11,7 +11,7 @@ const showAllNews = async (ctx, next) => {
     const newsList = await getNews();
     ctx.body = {
       code: 0,
-      newsList: newsList.slice(0, 20)
+      newsList: JSON.stringify(newsList.slice(0, 20))
     };
   } catch (e) {
     ctx.body = {
