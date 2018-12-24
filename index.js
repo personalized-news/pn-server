@@ -7,12 +7,22 @@ const cors = require('@koa/cors');
 const logger = require('koa-logger');
 const session = require('koa-generic-session');
 const redisStore = require('koa-redis');
+const compress = require('koa-compress');
 
 const config = require('./config');
 const router = require('./routes');
 const app = new Koa();
 
 app.use(cors());
+app.use(
+  compress({
+    filter: function(content_type) {
+      return /text/i.test(content_type);
+    },
+    threshold: 2048,
+    flush: require('zlib').Z_SYNC_FLUSH
+  })
+);
 
 app.keys = ['keys'];
 app.use(
