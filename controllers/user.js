@@ -86,14 +86,26 @@ const getToken = function() {
       data: 'foobar'
     },
     'secret',
-    { expiresIn: '1h' }
+    { expiresIn: '24h' }
   );
   return token;
+};
+
+const checkToken = function(token) {
+  try {
+    const decoded = jwt.verify(token, 'secret');
+    console.log('vaild token', decoded);
+    return true;
+  } catch (e) {
+    console.log('invalid token'); // token过期
+    return false;
+  }
 };
 
 module.exports = {
   index,
   signup,
   login,
-  logout
+  logout,
+  checkToken
 };
