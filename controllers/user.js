@@ -1,7 +1,9 @@
 'use strict';
+const jwt = require('jsonwebtoken');
 
 const { getUserInfo, createUser } = require('../models/user');
 
+// client中没有这个url -> /user
 const index = async (ctx, next) => {
   if (ctx.session && ctx.session.username) {
     const userInfo = await getUserInfo(ctx.session.username);
@@ -60,9 +62,11 @@ const login = async (ctx, next) => {
       };
     } else {
       ctx.session.username = username;
+      ctx.session.token = ctx.session.token ? ctx.session.token : getToken();
       ctx.body = {
         code: 0,
-        message: '密码正确'
+        message: '密码正确',
+        token: ctx.session.token
       };
     }
   }
@@ -74,6 +78,17 @@ const logout = async (ctx, next) => {
     code: 0,
     message: '登出成功'
   };
+};
+
+const getToken = function() {
+  const token = jwt.sign(
+    {
+      data: 'foobar'
+    },
+    'secret',
+    { expiresIn: '1h' }
+  );
+  return token;
 };
 
 module.exports = {
