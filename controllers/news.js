@@ -10,6 +10,8 @@ const showAllNews = async (ctx, next) => {
     const newsList = await getNews();
     ctx.compress = true;
     const token = ctx.request.header.authorization;
+    const username = ctx.session.username;
+    console.log(ctx.session);
     if (token && !checkToken(token)) {
       // 当请求头部有token时，如果token过期并且用户处于登陆状态就让用户重新登陆
       ctx.body = {
@@ -20,7 +22,8 @@ const showAllNews = async (ctx, next) => {
     } else {
       ctx.body = {
         code: 0,
-        newsList: newsList.slice(0, 20)
+        newsList: newsList.slice(0, 20),
+        username: username
       };
     }
   } catch (e) {

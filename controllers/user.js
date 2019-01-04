@@ -62,6 +62,7 @@ const login = async (ctx, next) => {
       };
     } else {
       ctx.session.username = username;
+      // 每次登陆的时候,如果没有token就返回一个新的token
       ctx.session.token = ctx.session.token ? ctx.session.token : getToken();
       ctx.body = {
         code: 0,
@@ -86,7 +87,7 @@ const getToken = function() {
       data: 'foobar'
     },
     'secret',
-    { expiresIn: '24h' }
+    { expiresIn: 10 }
   );
   return token;
 };
