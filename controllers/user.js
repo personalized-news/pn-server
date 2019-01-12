@@ -1,7 +1,9 @@
 'use strict';
+const jwt = require('jsonwebtoken');
 
 const { getUserInfo, createUser } = require('../models/user');
 
+// client中没有这个url -> /user
 const index = async (ctx, next) => {
   if (ctx.session && ctx.session.username) {
     const userInfo = await getUserInfo(ctx.session.username);
@@ -35,7 +37,6 @@ const signup = async (ctx, next) => {
       };
     } else {
       await createUser({ username, password });
-      ctx.session.username = username;
       ctx.body = {
         code: 0,
         message: 'Succeed'
@@ -59,16 +60,21 @@ const login = async (ctx, next) => {
         message: '密码错误'
       };
     } else {
-      ctx.session.username = username;
+      ctx.set('username', { username }, 3600 * 1000);
+      // 每次登陆的时候,如果没有token就返回一个新的token
+      ctx.session.token = ctx.session.token ? ctx.session.token : getToken();
+      ctx.sessionSave = true;
       ctx.body = {
         code: 0,
-        message: '密码正确'
+        message: '密码正确',
+        token: ctx.session.token
       };
     }
   }
 };
 
 const logout = async (ctx, next) => {
+  console.log(ctx.session);
   ctx.session = null;
   ctx.body = {
     code: 0,
@@ -76,9 +82,32 @@ const logout = async (ctx, next) => {
   };
 };
 
+const getToken = function() {
+  const token = jwt.sign(
+    {
+      data: 'foobar'
+    },
+    'secret',
+    { expiresIn: '24h' }
+  );
+  return token;
+};
+
+const checkToken = function(token) {
+  try {
+    const decoded = jwt.verify(token, 'secret');
+    console.log('vaild token', decoded);
+    return true;
+  } catch (e) {
+    console.log('invalid token'); // token过期
+    return false;
+  }
+};
+
 module.exports = {
   index,
   signup,
   login,
-  logout
+  logout,
+  checkToken
 };
