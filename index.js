@@ -24,13 +24,14 @@ app.use(
   })
 );
 
-app.keys = ['keys'];
+app.keys = ['keys', 'keykeys'];
 app.use(
   session({
-    store: redisStore(),
+    store: redisStore({}),
     key: 'pn:sess'
   })
 );
+
 app.use(bodyParser());
 app.use(logger());
 
