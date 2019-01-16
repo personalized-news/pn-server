@@ -1,5 +1,10 @@
 'use strict';
-const { getNews, getNewsByChannelName } = require('../models/news');
+const {
+  getNews,
+  getNewsByChannelName,
+  getNewsTotal,
+  getChannelNewsTotal
+} = require('../models/news');
 const { checkToken } = require('./user');
 const news = () => {};
 
@@ -9,18 +14,13 @@ const showAllNews = async (ctx, next) => {
   console.log(channelName, pageNumber); // 查询的新闻频道
   try {
     let newsList = [];
-    let st, end;
-    if (channelName === 'recommend') newsList = await getNews();
-    else newsList = await getNewsByChannelName(channelName);
-    // 每页显示20条新闻, 当请求的页号不是最后一页时,也就是说肯定可以返回20条新闻
-    // 把这20条新闻找出来
-    if (newsList.length / 20 >= pageNumber) {
-      st = (pageNumber - 1) * 20;
-      end = pageNumber * 20;
+    let total = 0;
+    if (channelName === 'recommend') {
+      newsList = await getNews(pageNumber);
+      total = await getNewsTotal();
     } else {
-      let remainder = newsList.length % 20;
-      end = newsList.length;
-      st = newsList.length - remainder;
+      newsList = await getNewsByChannelName(channelName, pageNumber);
+      total = await getChannelNewsTotal(channelName);
     }
     ctx.compress = true;
     const token = ctx.request.header.authorization;
@@ -28,15 +28,15 @@ const showAllNews = async (ctx, next) => {
       // 当请求头部有token时，如果token过期并且用户处于登陆状态就让用户重新登陆
       ctx.body = {
         code: 0,
-        newsList: newsList.slice(st, end),
+        newsList: newsList,
         message: 'invalid token',
-        total: newsList.length / 20
+        total: total / 20
       };
     } else {
       ctx.body = {
         code: 0,
-        newsList: newsList.slice(st, end),
-        total: newsList.length / 20
+        newsList: newsList,
+        total: total / 20
       };
     }
   } catch (e) {
